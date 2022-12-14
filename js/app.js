@@ -16,6 +16,12 @@ let imgThree = document.getElementById('img-three');
 let resultsBtn = document.getElementById('show-results-btn');
 let resultsList = document.getElementById('results-container');
 
+// ******* CANVAS ELEMENT FOR DEMO *****
+
+let canvasElem = document.getElementById('chart');
+
+
+
 
 // ***** CONSTRUCTOR FUNCTION ******
 
@@ -33,15 +39,22 @@ function randomIndex() {
 }
 
 function renderImg() {
+
+  while(imgArray.length < 6){
+    let randomNum =randomIndex();
+    if (!imgArray.includes(randomNum)){
+      imgArray.push(randomNum);
+    }
+  }
   let imgOneIndex = [randomIndex()];
   let imgTwoIndex = [randomIndex()];
   let imgThreeIndex = [randomIndex()];
 
   // ** Validation to make sure numbers are unique **
-  while (imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex) {
-    // TODO: reassign one of the variables
-    randomIndex();
-  }
+  // while (imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex) {
+  //   // TODO: reassign one of the variables
+  //   randomIndex();
+  // }
 
   imgOne.src = imgArray[imgOneIndex].img;
   imgTwo.src = imgArray[imgTwoIndex].img;
@@ -60,13 +73,54 @@ function renderImg() {
   imgArray[imgThreeIndex].views++;
 }
 
+function renderChart() {
+
+  let imgNames = [];
+  let imgVotes = [];
+  let imgViews = [];
+
+  for (let i = 0; i < imgArray.length; i++) {
+    imgNames.push(imgArray[i].names);
+    imgVotes.push(imgArray[i].votes);
+    imgViews.push(imgArray[i].views);
+  }
+
+
+
+
+
+  let chartObj = {
+    type: 'bar',
+    data: {
+      labels: imgNames,
+      datasets: [{
+        label: '# of Votes',
+        data: imgVotes,
+        borderWidth: 1,
+      },
+      {
+        label: '# of Views',
+        data: imgViews,
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  };
+
+  new CharacterData(canvasElem, chartObj);
+}
+
 // **** EVENT HANDLERS *****
 function handleClick(event) {
   // TODO: Identify what image was clicked on
 
   let imgClicked = event.target.title;
-
-  console.log(imgClicked);
 
   // TODO: Increase the number of votes to that specific image
   for (let i = 0; i < imgArray.length; i++) {
@@ -90,15 +144,11 @@ function handleClick(event) {
 function handleShowResults() {
   // TODO: Display the results once the there are no more votes
   if (votingRounds === 0) {
-    for (let i = 0; i < imgArray.length; i++) {
-      let liElem = document.createElement('li');
-      liElem.textContent = `${imgArray[i].name} - views: ${imgArray[i].views} & votes: ${imgArray[i].votes}`;
-      resultsList.appendChild(liElem);
-    }
-    resultsBtn.removeEventListener('click', handleShowResults);
-  }
+    renderChart();
 
+  }
 }
+
 
 
 
