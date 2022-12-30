@@ -14,7 +14,7 @@ let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
 
 let resultsBtn = document.getElementById('show-results-btn');
-let resultsList = document.getElementById('results-container');
+// let resultsList = document.getElementById('results-container');
 
 // ******* CANVAS ELEMENT FOR DEMO *****
 
@@ -40,9 +40,9 @@ function randomIndex() {
 
 function renderImg() {
 
-  while(imgArray.length < 6){
-    let randomNum =randomIndex();
-    if (!imgArray.includes(randomNum)){
+  while (imgArray.length < 6) {
+    let randomNum = randomIndex();
+    if (!imgArray.includes(randomNum)) {
       imgArray.push(randomNum);
     }
   }
@@ -80,14 +80,10 @@ function renderChart() {
   let imgViews = [];
 
   for (let i = 0; i < imgArray.length; i++) {
-    imgNames.push(imgArray[i].names);
+    imgNames.push(imgArray[i].name);
     imgVotes.push(imgArray[i].votes);
     imgViews.push(imgArray[i].views);
   }
-
-
-
-
 
   let chartObj = {
     type: 'bar',
@@ -113,7 +109,7 @@ function renderChart() {
     }
   };
 
-  new CharacterData(canvasElem, chartObj);
+  new Chart(canvasElem, chartObj);
 }
 
 // **** EVENT HANDLERS *****
@@ -137,6 +133,7 @@ function handleClick(event) {
   // TODO: once voting rounds have ended - not allow any more clicks
   if (votingRounds === 0) {
     imgContainer.removeEventListener('click', handleClick);
+
   }
 }
 
@@ -144,6 +141,7 @@ function handleClick(event) {
 function handleShowResults() {
   // TODO: Display the results once the there are no more votes
   if (votingRounds === 0) {
+    resultsBtn.removeEventListener('click', handleShowResults);
     renderChart();
 
   }
@@ -179,3 +177,4 @@ renderImg();
 
 imgContainer.addEventListener('click', handleClick);
 resultsBtn.addEventListener('click', handleShowResults);
+
